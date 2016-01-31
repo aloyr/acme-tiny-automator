@@ -1,7 +1,7 @@
 # acme-tiny-automator
 automates deployment of letsencrypt certs using acme-tiny library
 
-This relies on the acme-tiny library, does not need to be run as root, 
+This relies on the [acme-tiny library](https://github.com/diafygi/acme-tiny), does not need to be run as root, 
 does not install anything on the server, other than the acme-tiny.py file.
 
 ## motivation
