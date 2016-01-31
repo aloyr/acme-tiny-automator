@@ -117,13 +117,13 @@ echo "generating certificate request"
 if [ $LETSENCRYPT_HAS_SAN -eq 0 ]; then
     $OPENSSL req -new -sha256 -key "$LETSENCRYPT_CERT_KEY" \
         -subj "$LETSENCRYPT_CERT_SUBJECT"
-        -out "$LETSENCRYPT_CERT_REQUEST"
+        > "$LETSENCRYPT_CERT_REQUEST"
 else
     $OPENSSL req -new -sha256 -key "$LETSENCRYPT_CERT_KEY" \
         -subj "$LETSENCRYPT_CERT_SUBJECT" \
         -reqexts SAN
         -config <($CAT $OPENSSL_CNF <($PRINTF "$LETSENCRYPT_CERT_SAN")) \
-        -out "$LETSENCRYPT_CERT_REQUEST"
+        > "$LETSENCRYPT_CERT_REQUEST"
 fi
 
 # create challenge folder in the webroot
