@@ -4,4 +4,5 @@
 # you should copy this file into config.sh and then adjust config.sh to fit your environment
 ACME_TINY_LOCAL_FOLDER='/opt/acme-tiny'
 LETSENCRYPT_ROOT='/etc/httpd/ssl/letsencrypt'
-APACHE_ROOT='/var/www'
+OPENSSL_CNF='/etc/pki/tls/openssl.cnf'
+WEB_ROOT='/var/www'
