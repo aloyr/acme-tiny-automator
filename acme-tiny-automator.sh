@@ -103,3 +103,6 @@ fi
 echo "getting signed certificate"
 $PYTHON $ACME_TINY --account-key "$LETSENCRYPT_ACCOUNT" --csr "$LETSENCRYPT_CERT_REQUEST" --acme-dir "$LETSENCRYPT_CHALLENGE_FOLDER" > "$LETSENCRYPT_CERT"
 
+# output certificate expiration date
+echo "certificate for $LETSENCRYPT_CERT_DOMAIN has the following relevant dates:"
+$OPENSSL x509 -noout -dates -in "$LETSENCRYPT_CERT"
