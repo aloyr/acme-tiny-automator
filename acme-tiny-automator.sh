@@ -7,5 +7,12 @@
 . ./config.sh
 
 # general settings
-acme_tiny_url='https://raw.githubusercontent.com/diafygi/acme-tiny/master/acme_tiny.py'
-letsencrypt_intermediate_url='https://letsencrypt.org/certs/lets-encrypt-x1-cross-signed.pem'
+ACME_TINY_URL='https://raw.githubusercontent.com/diafygi/acme-tiny/master/acme_tiny.py'
+LETSENCRYPT_INTERMEDIATE_URL='https://letsencrypt.org/certs/lets-encrypt-x1-cross-signed.pem'
+
+# check for common tools
+GIT=$(which git)
+PYTHON=$(which python)
+
+# check for python libraries
+
