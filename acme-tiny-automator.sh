@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 function usage() {
-  >&2 echo "Usage: $0 <domain-name-to-create>"
+  >&2 echo "Usage: $0 <domain-name> [<alternative name 1> <alternative name 2> ...]"
   exit 1
 }
 
