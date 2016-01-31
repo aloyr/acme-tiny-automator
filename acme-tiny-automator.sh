@@ -30,7 +30,7 @@ function check_component() {
 }
 
 # check parameters
-if [ $# -ne 1 ] || [ $1 == '-h' ]; then
+if [ $# -lt 1 ] || [ $1 == '-h' ]; then
     usage
 fi
 
@@ -41,10 +41,23 @@ LETSENCRYPT_INTERMEDIATE_CERT="$LETSENCRYPT_ROOT/intermediate.pem"
 LETSENCRYPT_ACCOUNT="$LETSENCRYPT_ROOT/account.key"
 LETSENCRYPT_CERTS="$LETSENCRYPT_ROOT/certs"
 LETSENCRYPT_CERT_DOMAIN="$1"
+LETSENCRYPT_CERT_SUBJECT="/CN=$LETSENCRYPT_CERT_DOMAIN"
 LETSENCRYPT_CERT_KEY="$LETSENCRYPT_CERTS/$1.key"
 LETSENCRYPT_CERT_REQUEST="$LETSENCRYPT_CERTS/$1.csr"
 LETSENCRYPT_CERT="$LETSENCRYPT_CERTS/$1.crt"
 LETSENCRYPT_CHALLENGE_FOLDER="$APACHE_ROOT/$1/.well-known/acme-challenge/"
+
+# prepare SAN if necessary
+if [ $# -gt 1 ]; then
+    # add SAN header to subject
+    LETSENCRYPT_CERT_SUBJECT="$LETSENCRYPT_CERT_SUBJECT/subjectAltName="
+    # parse all additional names
+    for ((i=2; i<=$#; i++)) {
+        LETSENCRYPT_CERT_SUBJECT="${LETSENCRYPT_CERT_SUBJECT}DNS.$i=${!i},"
+    }
+    # remove trailing comma
+    LETSENCRYPT_CERT_SUBJECT="${LETSENCRYPT_CERT_SUBJECT%?}"
+fi
 
 # check for common tools
 ACME_TINY="$ACME_TINY_LOCAL_FOLDER/acme-tiny.py"
@@ -91,7 +104,7 @@ fi
 
 # create certificate request
 echo "generating certificate request"
-$OPENSSL req -new -sha256 -key "$LETSENCRYPT_CERT_KEY" -subj "/CN=$LETSENCRYPT_CERT_DOMAIN" > "$LETSENCRYPT_CERT_REQUEST"
+$OPENSSL req -new -sha256 -key "$LETSENCRYPT_CERT_KEY" -subj "$LETSENCRYPT_CERT_SUBJECT" > "$LETSENCRYPT_CERT_REQUEST"
 
 # create challenge folder in the webroot
 if [ ! -d "$LETSENCRYPT_CHALLENGE_FOLDER" ]; then
