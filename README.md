@@ -33,7 +33,7 @@ Soon I will create a setup script that will handle even that.
 ## execution
 Program execution is simple:
 ```bash
-./acme-tiny-automator <domain-name>
+./acme-tiny-automator <domain-name> [<alternative name 1> <alternative name 2> ...]
 ```
 This will get you setup with LetsEncrypt, in case you aren't already setup, issue the 
 proper certificate request, and place it in the folder specified in the configuration file.
