@@ -1,15 +1,21 @@
 #!/usr/bin/env bash
 
+function usage() {
+  >&2 echo "Usage: $0 <domain-name-to-create>"
+  exit 1
+}
+
+if [ ! -f config.sh ]; then
+    >&2 echo "Config file missing, exiting..."
+    >&2 echo "Copy config-examples.sh to config.sh and adjust accordingly"
+    exit 1
+fi
+
 # import custom settings
 # start with:
 # cp config-example.sh config.sh
 # and adjust accordingly
 . ./config.sh
-
-function usage() {
-  >&2 echo "Usage: $0 <domain-name-to-create>"
-  exit 1
-}
 
 function check_component() {
     RESULT=$(which $1)
