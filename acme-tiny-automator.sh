@@ -34,6 +34,11 @@ LETSENCRYPT_INTERMEDIATE_URL='https://letsencrypt.org/certs/lets-encrypt-x1-cros
 LETSENCRYPT_INTERMEDIATE_CERT="$LETSENCRYPT_ROOT/intermediate.pem"
 LETSENCRYPT_ACCOUNT="$LETSENCRYPT_ROOT/account.key"
 LETSENCRYPT_CERTS="$LETSENCRYPT_ROOT/certs"
+LETSENCRYPT_CERT_DOMAIN="$1"
+LETSENCRYPT_CERT_KEY="$LETSENCRYPT_CERTS/$1.key"
+LETSENCRYPT_CERT_REQUEST="$LETSENCRYPT_CERTS/$1.csr"
+LETSENCRYPT_CERT="$LETSENCRYPT_CERTS/$1.crt"
+LETSENCRYPT_CHALLENGE_FOLDER="$APACHE_ROOT/$1/.well-known/acme-challenge/"
 
 # check for common tools
 ACME_TINY="$ACME_TINY_LOCAL_FOLDER/acme-tiny.py"
@@ -58,7 +63,7 @@ if [ ! -f "$LETSENCRYPT_INTERMEDIATE_CERT" ]; then
     $WGET "$LETSENCRYPT_INTERMEDIATE_URL" -O $LETSENCRYPT_INTERMEDIATE_CERT
 fi
 
-# create account.key, if it doesn't exist
+# create private account.key, if it doesn't exist
 if [ ! -f "$LETSENCRYPT_ACCOUNT" ]; then
     $OPENSSL genrsa 4096 > "$LETSENCRYPT_ACCOUNT"
 fi
@@ -67,3 +72,18 @@ fi
 if [ ! -d "$LETSENCRYPT_CERTS" ]; then
     $MKDIR -p "$LETSENCRYPT_CERTS"
 fi
+
+# create domain private key, if it doesn't exist
+if [ ! -f "$LETSENCRYPT_CERT_KEY" ]; then
+    $OPENSSL genrsa 4096 > "$LETSENCRYPT_CERT_KEY"
+fi
+
+# create certificate request
+$OPENSSL req -new -sha256 -key "$LETSENCRYPT_CERT_KEY" -subj "/CN=$LETSENCRYPT_CERT_DOMAIN" > "$LETSENCRYPT_CERT"
+
+# create challenge folder in the webroot
+$MKDIR -p "$LETSENCRYPT_CHALLENGE_FOLDER"
+
+# get signed certificate with acme-tiny
+$PYTHON $ACME_TINY --account-key "$LETSENCRYPT_ACCOUNT" --csr "$LETSENCRYPT_CERT_REQUEST" --acme-dir "$LETSENCRYPT_CHALLENGE_FOLDER" > "$LETSENCRYPT_CERT"^
+
