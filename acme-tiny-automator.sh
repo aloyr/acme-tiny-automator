@@ -31,6 +31,7 @@ fi
 # general settings
 ACME_TINY_URL='https://raw.githubusercontent.com/diafygi/acme-tiny/master/acme_tiny.py'
 LETSENCRYPT_INTERMEDIATE_URL='https://letsencrypt.org/certs/lets-encrypt-x1-cross-signed.pem'
+LETSENCRYPT_INTERMEDIATE_CERT="$LETSENCRYPT_ROOT/intermediate.pem"
 
 # check for common tools
 ACME_TINY="$ACME_TINY_LOCAL_FOLDER/acme-tiny.py"
@@ -39,9 +40,18 @@ PYTHON=$(check_component python)
 WGET=$(check_component wget)
 
 # download acme-tiny, if it doesnt exist
-if [ ! -d "$ACME_TINY_LOCAL_FOLDER" ]; then
-    mkdir -p $ACME_TINY_LOCAL_FOLDER
+if [ ! -d "$
+ACME_TINY_LOCAL_FOLDER" ]; then
+    mkdir -p "$ACME_TINY_LOCAL_FOLDER"
     $WGET $ACME_TINY_URL -O $ACME_TINY
+fi
+
+# create certificate root & intermediate, if it doesn't exit
+if [ ! -f "$LETSENCRYPT_INTERMEDIATE_CERT" ]; then
+    if [ ! -d "$LETSENCRYPT_ROOT" ]; then
+        mkdir -p "$LETSENCRYPT_ROOT"
+    fi
+    $WGET "$LETSENCRYPT_INTERMEDIATE_URL" -O $LETSENCRYPT_INTERMEDIATE_CERT
 fi
 
 
