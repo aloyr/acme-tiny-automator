@@ -37,13 +37,13 @@ fi
 # general settings
 ACME_TINY_URL='https://raw.githubusercontent.com/diafygi/acme-tiny/master/acme_tiny.py'
 LETSENCRYPT_ACCOUNT="$LETSENCRYPT_ROOT/account.key"
+LETSENCRYPT_CERTS="$LETSENCRYPT_ROOT/certs"
 LETSENCRYPT_CERT="$LETSENCRYPT_CERTS/$1.crt"
 LETSENCRYPT_CERT_DOMAIN="$1"
 LETSENCRYPT_CERT_KEY="$LETSENCRYPT_CERTS/$1.key"
 LETSENCRYPT_CERT_REQUEST="$LETSENCRYPT_CERTS/$1.csr"
 LETSENCRYPT_CERT_SAN="[SAN]\nsubjectAltName="
 LETSENCRYPT_CERT_SUBJECT="/CN=$LETSENCRYPT_CERT_DOMAIN"
-LETSENCRYPT_CERTS="$LETSENCRYPT_ROOT/certs"
 LETSENCRYPT_CHALLENGE_FOLDER="$WEB_ROOT/$1/.well-known/acme-challenge/"
 LETSENCRYPT_HAS_SAN=0
 LETSENCRYPT_INTERMEDIATE_URL='https://letsencrypt.org/certs/lets-encrypt-x1-cross-signed.pem'
@@ -121,7 +121,7 @@ if [ $LETSENCRYPT_HAS_SAN -eq 0 ]; then
 else
     $OPENSSL req -new -sha256 -key "$LETSENCRYPT_CERT_KEY" \
         -subj "$LETSENCRYPT_CERT_SUBJECT" \
-        -reqexts SAN
+        -reqexts SAN \
         -config <($CAT $OPENSSL_CNF <($PRINTF "$LETSENCRYPT_CERT_SAN")) \
         > "$LETSENCRYPT_CERT_REQUEST"
 fi
@@ -134,10 +134,10 @@ fi
 
 # get signed certificate with acme-tiny
 echo "getting signed certificate"
-$PYTHON $ACME_TINY --account-key "$LETSENCRYPT_ACCOUNT" \
+echo $PYTHON $ACME_TINY --account-key "$LETSENCRYPT_ACCOUNT" \
     --csr "$LETSENCRYPT_CERT_REQUEST" \
-    --acme-dir "$LETSENCRYPT_CHALLENGE_FOLDER" \
-    > "$LETSENCRYPT_CERT"
+    --acme-dir "$LETSENCRYPT_CHALLENGE_FOLDER"
+    #> "$LETSENCRYPT_CERT"
 
 # output certificate expiration date
 echo "certificate for $LETSENCRYPT_CERT_DOMAIN has the following relevant dates:"
