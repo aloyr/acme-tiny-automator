@@ -53,7 +53,8 @@ if [ $# -gt 1 ]; then
     LETSENCRYPT_CERT_SUBJECT="$LETSENCRYPT_CERT_SUBJECT/subjectAltName="
     # parse all additional names
     for ((i=2; i<=$#; i++)) {
-        LETSENCRYPT_CERT_SUBJECT="${LETSENCRYPT_CERT_SUBJECT}DNS.$i=${!i},"
+        DNS_SEQ=$(($i - 1))
+        LETSENCRYPT_CERT_SUBJECT="${LETSENCRYPT_CERT_SUBJECT}DNS.$DNS_SEQ=${!i},"
     }
     # remove trailing comma
     LETSENCRYPT_CERT_SUBJECT="${LETSENCRYPT_CERT_SUBJECT%?}"
