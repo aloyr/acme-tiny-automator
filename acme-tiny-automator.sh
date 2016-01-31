@@ -55,8 +55,8 @@ PYTHON=$(check_component python)
 WGET=$(check_component wget)
 
 # download acme-tiny, if it doesnt exist
-if [ ! -d "$
-ACME_TINY_LOCAL_FOLDER" ]; then
+if [ ! -d "$ACME_TINY_LOCAL_FOLDER" ]; then
+    echo "downloading acme-tiny"
     $MKDIR -p "$ACME_TINY_LOCAL_FOLDER"
     $WGET $ACME_TINY_URL -O $ACME_TINY
 fi
@@ -64,32 +64,42 @@ fi
 # create certificate folder & intermediate, if it doesn't exit
 if [ ! -f "$LETSENCRYPT_INTERMEDIATE_CERT" ]; then
     if [ ! -d "$LETSENCRYPT_ROOT" ]; then
+        echo "creating letsencrypt folder"
         $MKDIR -p "$LETSENCRYPT_ROOT"
     fi
+    echo "downloading intermediate certificate"
     $WGET "$LETSENCRYPT_INTERMEDIATE_URL" -O $LETSENCRYPT_INTERMEDIATE_CERT
 fi
 
 # create private account.key, if it doesn't exist
 if [ ! -f "$LETSENCRYPT_ACCOUNT" ]; then
+    echo "generating letsencrypt account private key file (this should only happen once)"
     $OPENSSL genrsa 4096 > "$LETSENCRYPT_ACCOUNT"
 fi
 
 # create certs folder, if it doesn't exist
 if [ ! -d "$LETSENCRYPT_CERTS" ]; then
+    echo "creating certificates folder"
     $MKDIR -p "$LETSENCRYPT_CERTS"
 fi
 
 # create domain private key, if it doesn't exist
 if [ ! -f "$LETSENCRYPT_CERT_KEY" ]; then
+    echo "creating domain private file (this should only happen once)"
     $OPENSSL genrsa 4096 > "$LETSENCRYPT_CERT_KEY"
 fi
 
 # create certificate request
-$OPENSSL req -new -sha256 -key "$LETSENCRYPT_CERT_KEY" -subj "/CN=$LETSENCRYPT_CERT_DOMAIN" > "$LETSENCRYPT_CERT"
+echo "generating certificate request"
+$OPENSSL req -new -sha256 -key "$LETSENCRYPT_CERT_KEY" -subj "/CN=$LETSENCRYPT_CERT_DOMAIN" > "$LETSENCRYPT_CERT_REQUEST"
 
 # create challenge folder in the webroot
-$MKDIR -p "$LETSENCRYPT_CHALLENGE_FOLDER"
+if [ ! -d "$LETSENCRYPT_CHALLENGE_FOLDER" ]; THEN
+    echo "creating challenge folder"
+    $MKDIR -p "$LETSENCRYPT_CHALLENGE_FOLDER"
+fi
 
 # get signed certificate with acme-tiny
-$PYTHON $ACME_TINY --account-key "$LETSENCRYPT_ACCOUNT" --csr "$LETSENCRYPT_CERT_REQUEST" --acme-dir "$LETSENCRYPT_CHALLENGE_FOLDER" > "$LETSENCRYPT_CERT"^
+echo "getting signed certificate"
+$PYTHON $ACME_TINY --account-key "$LETSENCRYPT_ACCOUNT" --csr "$LETSENCRYPT_CERT_REQUEST" --acme-dir "$LETSENCRYPT_CHALLENGE_FOLDER" > "$LETSENCRYPT_CERT"
 
