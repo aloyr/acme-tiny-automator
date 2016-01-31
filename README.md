@@ -11,7 +11,7 @@ that we can instantiate as an environment for code and content QA. This project 
 at the domain level, which makes wildcard certs less convenient to use.
 
 Having this whole environment on SSL automatically will help my process and perhaps will help someone else
-tha happens to stumble upon this. :)
+that happens to stumble upon this. :)
 
 ## installation
 To install, you will need to clone the repository and customize the configuration file.
