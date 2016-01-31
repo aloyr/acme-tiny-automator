@@ -13,6 +13,12 @@ at the domain level, which makes wildcard certs less convenient to use.
 Having this whole environment on SSL automatically will help my process and perhaps will help someone else
 that happens to stumble upon this. :)
 
+While I love the work done by the letsencrypt initiative, I don't feel comfortable having 8000 lines of 
+script run as root on my servers and modifying my web services.
+
+If you like this project, [donate to the EFF](https://www.eff.org/). They do awesome work there, and without them,
+this initiative wouldn't exist.
+
 ## installation
 To install, you will need to clone the repository and customize the configuration file.
 At a minimum, that will involve the following:
