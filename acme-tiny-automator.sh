@@ -94,7 +94,7 @@ echo "generating certificate request"
 $OPENSSL req -new -sha256 -key "$LETSENCRYPT_CERT_KEY" -subj "/CN=$LETSENCRYPT_CERT_DOMAIN" > "$LETSENCRYPT_CERT_REQUEST"
 
 # create challenge folder in the webroot
-if [ ! -d "$LETSENCRYPT_CHALLENGE_FOLDER" ]; THEN
+if [ ! -d "$LETSENCRYPT_CHALLENGE_FOLDER" ]; then
     echo "creating challenge folder"
     $MKDIR -p "$LETSENCRYPT_CHALLENGE_FOLDER"
 fi
