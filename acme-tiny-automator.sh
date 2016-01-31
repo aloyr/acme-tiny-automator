@@ -60,11 +60,11 @@ if [ $# -gt 1 ]; then
     fi
     echo "processing SAN"
     # parse all additional names
-    for ((i=2; i<=$#; i++)) {
+    for ((i=1; i<=$#; i++)) {
         LETSENCRYPT_CERT_SAN="${LETSENCRYPT_CERT_SAN}DNS:${!i},"
     }
     # remove trailing comma
-    LETSENCRYPT_CERT_SUBJECT="${LETSENCRYPT_CERT_SAN%?}"
+    LETSENCRYPT_CERT_SAN="${LETSENCRYPT_CERT_SAN%?}"
 fi
 
 # check for common tools
@@ -134,10 +134,10 @@ fi
 
 # get signed certificate with acme-tiny
 echo "getting signed certificate"
-echo $PYTHON $ACME_TINY --account-key "$LETSENCRYPT_ACCOUNT" \
+$PYTHON $ACME_TINY --account-key "$LETSENCRYPT_ACCOUNT" \
     --csr "$LETSENCRYPT_CERT_REQUEST" \
-    --acme-dir "$LETSENCRYPT_CHALLENGE_FOLDER"
-    #> "$LETSENCRYPT_CERT"
+    --acme-dir "$LETSENCRYPT_CHALLENGE_FOLDER" \
+    > "$LETSENCRYPT_CERT"
 
 # output certificate expiration date
 echo "certificate for $LETSENCRYPT_CERT_DOMAIN has the following relevant dates:"
