@@ -8,4 +8,4 @@
 
 # general settings
 acme_tiny_url='https://raw.githubusercontent.com/diafygi/acme-tiny/master/acme_tiny.py'
-
+letsencrypt_intermediate_url='https://letsencrypt.org/certs/lets-encrypt-x1-cross-signed.pem'
