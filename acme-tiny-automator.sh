@@ -116,7 +116,7 @@ fi
 echo "generating certificate request"
 if [ $LETSENCRYPT_HAS_SAN -eq 0 ]; then
     $OPENSSL req -new -sha256 -key "$LETSENCRYPT_CERT_KEY" \
-        -subj "$LETSENCRYPT_CERT_SUBJECT"
+        -subj "$LETSENCRYPT_CERT_SUBJECT" \
         > "$LETSENCRYPT_CERT_REQUEST"
 else
     $OPENSSL req -new -sha256 -key "$LETSENCRYPT_CERT_KEY" \
