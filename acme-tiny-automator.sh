@@ -2,6 +2,8 @@
 
 function usage() {
   >&2 echo "Usage: $0 <domain-name> [<alternative name 1> <alternative name 2> ...]"
+  >&2 echo "Usage: $0 or"
+  >&2 echo "Usage: $0 renew"
   exit 1
 }
 
@@ -32,6 +34,16 @@ function check_component() {
 # check parameters
 if [ $# -lt 1 ] || [ $1 == '-h' ]; then
     usage
+fi
+
+if [ $# -gt 1 ] && [ $1 == 'renew' ]; then
+    usage
+fi
+
+if [ $# -eq 1 ] && [ $1 == 'renew' ]; then
+    LETSENCRYPT_RENEW=1
+else
+    LETSENCRYPT_RENEW=0
 fi
 
 # general settings
