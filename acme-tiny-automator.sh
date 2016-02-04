@@ -124,6 +124,10 @@ if [ ! -f "$LETSENCRYPT_CERT_KEY" ]; then
     $OPENSSL genrsa 4096 > "$LETSENCRYPT_CERT_KEY"
 fi
 
+if [ $LETSENCRYPT_RENEW -eq 1 ]; then
+  #TODO implement renew function
+  exit
+fi
 # create certificate request
 echo "generating certificate request"
 if [ $LETSENCRYPT_HAS_SAN -eq 0 ]; then
