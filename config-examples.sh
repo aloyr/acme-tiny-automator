@@ -5,4 +5,5 @@
 ACME_TINY_LOCAL_FOLDER='/opt/acme-tiny'
 LETSENCRYPT_ROOT='/etc/httpd/ssl/letsencrypt'
 OPENSSL_CNF='/etc/pki/tls/openssl.cnf'
+RENEW_DAYS_BEFORE_EXPIRATION=7
 WEB_ROOT='/var/www'

@@ -118,17 +118,32 @@ if [ ! -d "$LETSENCRYPT_CERTS" ]; then
     $MKDIR -p "$LETSENCRYPT_CERTS"
 fi
 
+# process renewals
+if [ $LETSENCRYPT_RENEW -eq 1 ]; then
+    NOW=$(date +%s)
+    DAY=86400
+    ls $LETSENCRYPT_CERTS/*.crt | while read CERT; do
+        EXPIRATION=$(date --date="$(openssl x509 -in $CERT -noout -dates | \
+            awk 'BEGIN {FS="=";} $0 ~ /notAfter/ {print $2;}')" +%s)
+        DAYS_TO_EXPIRE=$((($EXPIRATION - $NOW) / $DAY))
+        CERT=$(echo $CERT | sed 's/.*\///g')
+        if [ $RENEW_DAYS_BEFORE_EXPIRATION -ge $DAYS_TO_EXPIRE ]; then
+             #TODO - sign cert
+             echo "would have signed $CERT"
+        else
+            echo "Not renewing $CERT, $DAYS_TO_EXPIRE left to expire"
+        fi
+    done
+    exit
+fi
+
 # create domain private key, if it doesn't exist
 if [ ! -f "$LETSENCRYPT_CERT_KEY" ]; then
     echo "creating domain private file (this should only happen once)"
     $OPENSSL genrsa 4096 > "$LETSENCRYPT_CERT_KEY"
 fi
 
-if [ $LETSENCRYPT_RENEW -eq 1 ]; then
-  #TODO implement renew function
-  exit
-fi
-# create certificate request
+ create certificate request
 echo "generating certificate request"
 if [ $LETSENCRYPT_HAS_SAN -eq 0 ]; then
     $OPENSSL req -new -sha256 -key "$LETSENCRYPT_CERT_KEY" \
