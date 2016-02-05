@@ -120,18 +120,30 @@ fi
 
 # process renewals
 if [ $LETSENCRYPT_RENEW -eq 1 ]; then
+    echo "Checking for certificates expiring in $RENEW_DAYS_BEFORE_EXPIRATION days"
     NOW=$(date +%s)
     DAY=86400
-    ls $LETSENCRYPT_CERTS/*.crt | while read CERT; do
-        EXPIRATION=$(date --date="$(openssl x509 -in $CERT -noout -dates | \
+    ls $LETSENCRYPT_CERTS/*.crt | while read RENEW_CERT; do
+        EXPIRATION=$(date --date="$(openssl x509 -in $RENEW_CERT -noout -dates | \
             awk 'BEGIN {FS="=";} $0 ~ /notAfter/ {print $2;}')" +%s)
         DAYS_TO_EXPIRE=$((($EXPIRATION - $NOW) / $DAY))
-        CERT=$(echo $CERT | sed 's/.*\///g')
+        RENEW_DOMAIN=$(echo $RENEW_CERT | sed 's/.*\///g')
+        RENEW_ROOT=$(echo $RENEW_CERT | sed 's/.crt//g')
+        RENEW_KEY="$RENEW_ROOT.key"
+        RENEW_REQUEST="$RENEW_ROOT.csr"
         if [ $RENEW_DAYS_BEFORE_EXPIRATION -ge $DAYS_TO_EXPIRE ]; then
-             #TODO - sign cert
-             echo "would have signed $CERT"
+             # renew certificate with acme-tiny
+             RENEW_CHALLENGE_FOLDER="$WEB_ROOT/$RENEW_ROOT/.well-known/acme-challenge/"
+             echo "Backing up certificate as $RENEW_ROOT.crt_$(date --iso-8601)"
+             RENEW_BACKUP="$RENEW_CERT_$(date --iso-8601)"
+             echo cp $RENEW_CERT $RENEW_BACKUP
+             echo "Renewing $RENEW_ROOT"
+             $PYTHON $ACME_TINY --account-key "$LETSENCRYPT_ACCOUNT" \
+                --csr "$RENEW_REQUEST" \
+                --acme-dir "$RENEW_CHALLENGE_FOLDER" \
+                > "$RENEW_CERT"
         else
-            echo "Not renewing $CERT, $DAYS_TO_EXPIRE left to expire"
+            echo "Not renewing $RENEW_ROOT, $DAYS_TO_EXPIRE left to expire"
         fi
     done
     exit
