@@ -80,7 +80,7 @@ if [ $# -gt 1 ]; then
 fi
 
 # check for common tools
-ACME_TINY="$ACME_TINY_LOCAL_FOLDER/acme-tiny.py"
+ACME_TINY="$ACME_TINY_LOCAL_FOLDER/acme_tiny.py"
 CAT=$(check_component cat)
 GIT=$(check_component git)
 MKDIR=$(check_component mkdir)
@@ -127,13 +127,13 @@ if [ $LETSENCRYPT_RENEW -eq 1 ]; then
         EXPIRATION=$(date --date="$(openssl x509 -in $RENEW_CERT -noout -dates | \
             awk 'BEGIN {FS="=";} $0 ~ /notAfter/ {print $2;}')" +%s)
         DAYS_TO_EXPIRE=$((($EXPIRATION - $NOW) / $DAY))
-        RENEW_DOMAIN=$(echo $RENEW_CERT | sed 's/.*\///g')
+        RENEW_DOMAIN=$(echo $RENEW_CERT | sed 's/.*\/\([^/]*\)\.crt$/\1/g')
         RENEW_ROOT=$(echo $RENEW_CERT | sed 's/.crt//g')
         RENEW_KEY="$RENEW_ROOT.key"
         RENEW_REQUEST="$RENEW_ROOT.csr"
         if [ $RENEW_DAYS_BEFORE_EXPIRATION -ge $DAYS_TO_EXPIRE ]; then
              # renew certificate with acme-tiny
-             RENEW_CHALLENGE_FOLDER="$WEB_ROOT/$RENEW_ROOT/.well-known/acme-challenge/"
+             RENEW_CHALLENGE_FOLDER="$WEB_ROOT/$RENEW_DOMAIN/.well-known/acme-challenge/"
              echo "Backing up certificate as $RENEW_ROOT.crt_$(date --iso-8601)"
              RENEW_BACKUP="$RENEW_CERT_$(date --iso-8601)"
              echo cp $RENEW_CERT $RENEW_BACKUP
