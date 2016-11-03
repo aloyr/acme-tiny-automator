@@ -58,7 +58,7 @@ LETSENCRYPT_CERT_SAN="[SAN]\nsubjectAltName="
 LETSENCRYPT_CERT_SUBJECT="/CN=$LETSENCRYPT_CERT_DOMAIN"
 LETSENCRYPT_CHALLENGE_FOLDER="$WEB_ROOT/$1/.well-known/acme-challenge/"
 LETSENCRYPT_HAS_SAN=0
-LETSENCRYPT_INTERMEDIATE_URL='https://letsencrypt.org/certs/lets-encrypt-x1-cross-signed.pem'
+LETSENCRYPT_INTERMEDIATE_URL='https://letsencrypt.org/certs/lets-encrypt-x3-cross-signed.pem'
 LETSENCRYPT_INTERMEDIATE_CERT="$LETSENCRYPT_ROOT/intermediate.pem"
 
 # prepare SAN if necessary
