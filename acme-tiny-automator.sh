@@ -31,6 +31,15 @@ function check_component() {
     fi
 }
 
+function check_error() {
+  if [ $(echo $?) -ne 0 ]; then 
+    echo "Something went wrong, aborting..."
+    exit 1
+  else
+    echo "$1"
+  fi
+}
+
 # check parameters
 if [ $# -lt 1 ] || [ $1 == '-h' ]; then
     usage
@@ -182,6 +191,7 @@ $PYTHON $ACME_TINY --account-key "$LETSENCRYPT_ACCOUNT" \
     --csr "$LETSENCRYPT_CERT_REQUEST" \
     --acme-dir "$LETSENCRYPT_CHALLENGE_FOLDER" \
     > "$LETSENCRYPT_CERT"
+check_error "signed certificate received"
 
 # combine cert + intermediate into pem file
 cat $LETSENCRYPT_CERT $LETSENCRYPT_INTERMEDIATE_CERT > $LETSENCRYPT_CERT_PEM
