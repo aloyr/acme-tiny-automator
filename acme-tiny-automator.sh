@@ -51,6 +51,7 @@ ACME_TINY_URL='https://raw.githubusercontent.com/diafygi/acme-tiny/master/acme_t
 LETSENCRYPT_ACCOUNT="$LETSENCRYPT_ROOT/account.key"
 LETSENCRYPT_CERTS="$LETSENCRYPT_ROOT/certs"
 LETSENCRYPT_CERT="$LETSENCRYPT_CERTS/$1.crt"
+LETSENCRYPT_CERT_PEM="$LETSENCRYPT_CERTS/$1.pem"
 LETSENCRYPT_CERT_DOMAIN="$1"
 LETSENCRYPT_CERT_KEY="$LETSENCRYPT_CERTS/$1.key"
 LETSENCRYPT_CERT_REQUEST="$LETSENCRYPT_CERTS/$1.csr"
@@ -181,6 +182,9 @@ $PYTHON $ACME_TINY --account-key "$LETSENCRYPT_ACCOUNT" \
     --csr "$LETSENCRYPT_CERT_REQUEST" \
     --acme-dir "$LETSENCRYPT_CHALLENGE_FOLDER" \
     > "$LETSENCRYPT_CERT"
+
+# combine cert + intermediate into pem file
+cat $LETSENCRYPT_CERT $LETSENCRYPT_INTERMEDIATE_CERT > $LETSENCRYPT_CERT_PEM
 
 # output certificate expiration date
 echo "certificate for $LETSENCRYPT_CERT_DOMAIN has the following relevant dates:"
